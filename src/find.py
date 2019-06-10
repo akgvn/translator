@@ -5,6 +5,8 @@ import html
 
 import json
 
+import translator
+
 from tag_stripper import strip_tags
 
 jsonFileName: str = 'test.json'
@@ -24,7 +26,10 @@ def translate(stri):
     
     stri = strip_tags(stri)
     stri = html.unescape(stri)
-    return "Translated: " + stri # TODO the real thing
+
+    translator = translator.Translator()
+
+    return translator.translate(stri) # TODO the real thing
 
 def traverseAndPrint(file_data):
     # Recursive implementation to find strings in a JSON file for translating.
