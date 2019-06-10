@@ -5,7 +5,7 @@ import html
 
 import json
 
-import translator
+import google_translator
 
 from tag_stripper import strip_tags
 
@@ -21,15 +21,19 @@ output = open("out.json", "w", encoding='utf8')
 
 json_file.close()
 
-def translate(stri):
-    # TODO don't try to translate the empty strings!
+translator = google_translator.Translator()
+
+def translation_handler(to_translate):
+    # TODO don't try to translation_handler the empty strings!
     
-    stri = strip_tags(stri)
-    stri = html.unescape(stri)
+    to_translate = strip_tags(to_translate)
+    to_translate = str(html.unescape(to_translate))
+    to_translate = to_translate.strip()
 
-    translator = translator.Translator()
+    if (not to_translate):
+        return ""
 
-    return translator.translate(stri) # TODO the real thing
+    return translator.translate(to_translate) # TODO the real thing
 
 def traverseAndPrint(file_data):
     # Recursive implementation to find strings in a JSON file for translating.
@@ -44,14 +48,14 @@ def traverseAndPrint(file_data):
             if isinstance(data, list):
                 traverseAndPrint(data)
             elif (isinstance(data, dict)) and ("tr" in data.keys()):
-                data[targetLocale] = translate(data["tr"])  # Do the translation
+                data[targetLocale] = translation_handler(data["tr"])  # Do the translation
             elif key == "title":
                 if isinstance(data, str):
                     title_dict = {"tr" : data}
                 elif isinstance(data, dict):
                     title_dict = data
                 
-                title_dict[targetLocale] = translate(title_dict["tr"]) # Do the translation
+                title_dict[targetLocale] = translation_handler(title_dict["tr"]) # Do the translation
                 file_data[key] = title_dict # Append translation to the dictionary
 
 traverseAndPrint(file_data)
