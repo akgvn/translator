@@ -4,3 +4,5 @@ out.json
 src/__pycache__/tag_stripper.cpython-37.pyc
 src/__pycache__/translator.cpython-37.pyc
 src/__pycache__/google_translator.cpython-37.pyc
+translation_db/locale-en.json
+translation_db/locale-pt.json

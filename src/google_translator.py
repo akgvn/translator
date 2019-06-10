@@ -17,7 +17,7 @@ class Translator:
         self._targetLocale = targetLocale
 
     def translate(self, querySentence):
-        # TODO gotta send get requests.
+        # TODO If a translation is done before, don't do it again.
 
         query = {
             "key" : self._key, # API Key
@@ -29,7 +29,7 @@ class Translator:
         r = json.loads(r.text)
 
         try:
-            translated = r["data"]["translations"][0]["translatedText"] #{'data': {'translations': [{'translatedText': 'Hello there', 'detectedSourceLanguage': 'tr'}]}}
+            translated = r["data"]["translations"][0]["translatedText"] # {'data': {'translations': [{'translatedText': 'Hello there', 'detectedSourceLanguage': 'tr'}]}}
             return translated
         except:
             print(r)
