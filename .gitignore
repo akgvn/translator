@@ -6,3 +6,4 @@ translation_db/locale-pt.json
 json_to_translate/*
 results/*
 __pycache__/*
+things.json

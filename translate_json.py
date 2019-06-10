@@ -2,22 +2,15 @@
 # Usually key is "tr" and "title"
 
 import html
-
 import json
-
 import google_translator
-
 from tag_stripper import strip_tags
-
 import sys
-
 import os
 
 translator = google_translator.Translator("en")
 
 def translation_handler(to_translate):
-    # TODO don't try to translation_handler the empty strings!
-    
     to_translate = strip_tags(to_translate)
     to_translate = str(html.unescape(to_translate))
     to_translate = to_translate.strip()
@@ -52,6 +45,9 @@ def traverseAndTranslate(file_data):
 
 if __name__ == "__main__":
     for filename in os.listdir(os.getcwd()+"/json_to_translate"):
+
+        # TODO Walk throught all subdirectories to find json files.
+
         print("File to translate:", filename)
 
         jsonFileName = "json_to_translate/"+filename
