@@ -23,7 +23,6 @@ def translate(stri):
     # TODO don't try to translate the empty strings!
     
     stri = strip_tags(stri)
-
     stri = html.unescape(stri)
     return "Translated: " + stri # TODO the real thing
 
