@@ -13,8 +13,6 @@ class Translator:
         self._key = apiKeyRead.read()
         apiKeyRead.close()
 
-        print(self._key)
-
         self._targetLocale = targetLocale
 
         prepared_translations = open("translation_db/locale-"+targetLocale+".json", "r", encoding='utf8')
@@ -38,6 +36,7 @@ class Translator:
 
         try:
             translated = r["data"]["translations"][0]["translatedText"] # {'data': {'translations': [{'translatedText': 'Hello there', 'detectedSourceLanguage': 'tr'}]}}
+            translated = translated.strip()
             self.translations_in_hand[querySentence] = translated
             return translated
         except:

@@ -11,6 +11,10 @@ from tag_stripper import strip_tags
 
 import sys
 
+import os
+
+translator = google_translator.Translator("en")
+
 def translation_handler(to_translate):
     # TODO don't try to translation_handler the empty strings!
     
@@ -47,26 +51,26 @@ def traverseAndTranslate(file_data):
                 file_data[key] = title_dict # Append translation to the dictionary
 
 if __name__ == "__main__":
-    jsonFileName = 'test.json'
-    targetLocale = "en"
+    for filename in os.listdir(os.getcwd()+"/json_to_translate"):
+        print("File to translate:", filename)
 
-    if len(sys.argv) > 2:
-        targetLocale = sys.argv[1]
-        jsonFileName = sys.argv[2]
-    
-    json_file = open(jsonFileName, encoding='utf8')
-    file_data = json_file.read()
-    file_data = json.loads(file_data)
-    json_file.close()
+        jsonFileName = "json_to_translate/"+filename
+        targetLocale = 'pt'
 
-    output = open("out.json", "w", encoding='utf8')
-    
-    translator = google_translator.Translator(targetLocale)
-    
-    traverseAndTranslate(file_data)
-    
-    output.write(json.dumps(file_data, indent=4, ensure_ascii=False)) # Dump the dictionary into a JSON file
+        json_file = open(jsonFileName, encoding='utf8')
+        file_data = json_file.read()
+        file_data = json.loads(file_data)
+        json_file.close()
 
-    output.close()
+        output = open("results/"+filename, "w+", encoding='utf8')
 
-    translator.close()
+        translator = google_translator.Translator(targetLocale)
+
+        traverseAndTranslate(file_data)
+
+        output.write(json.dumps(file_data, indent=4, ensure_ascii=False)) # Dump the dictionary into a JSON file
+
+        output.close()
+
+        translator.close()
+    print("\nDone!\n")
