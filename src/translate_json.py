@@ -9,6 +9,8 @@ import google_translator
 
 from tag_stripper import strip_tags
 
+import sys
+
 def translation_handler(to_translate):
     # TODO don't try to translation_handler the empty strings!
     
@@ -19,7 +21,7 @@ def translation_handler(to_translate):
     if (not to_translate):
         return ""
 
-    return translator.translate(to_translate) # TODO the real thing
+    return translator.translate(to_translate)
 
 def traverseAndTranslate(file_data):
     # Recursive implementation to find strings in a JSON file for translating.
@@ -45,20 +47,26 @@ def traverseAndTranslate(file_data):
                 file_data[key] = title_dict # Append translation to the dictionary
 
 if __name__ == "__main__":
-    jsonFileName: str = 'test.json'
+    jsonFileName = 'test.json'
     targetLocale = "en"
+
+    if len(sys.argv) > 2:
+        targetLocale = sys.argv[1]
+        jsonFileName = sys.argv[2]
     
     json_file = open(jsonFileName, encoding='utf8')
-    
     file_data = json_file.read()
     file_data = json.loads(file_data)
-    
+    json_file.close()
+
     output = open("out.json", "w", encoding='utf8')
     
-    json_file.close()
-    
-    translator = google_translator.Translator()
+    translator = google_translator.Translator(targetLocale)
     
     traverseAndTranslate(file_data)
     
     output.write(json.dumps(file_data, indent=4, ensure_ascii=False)) # Dump the dictionary into a JSON file
+
+    output.close()
+
+    translator.close()
