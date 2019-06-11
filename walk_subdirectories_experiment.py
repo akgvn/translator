@@ -10,7 +10,6 @@ for (dirpath, dirnames, filenames) in os.walk(os.getcwd()+"\\json_to_translate")
         if filename.endswith('.json'):
             list_of_files[filename] = os.sep.join([dirpath, filename])
             print("dirpath:", dirpath.replace(os.getcwd()+"\\json_to_translate", "")) # Subdirectories of json_to_translate
-            print("filename:", filename)
 
 fil = open("things.json", "w")
 

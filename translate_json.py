@@ -7,6 +7,7 @@ import google_translator
 from tag_stripper import strip_tags
 import sys
 import os
+from collections.abc import Iterable
 
 translator = google_translator.Translator("en")
 
@@ -27,6 +28,10 @@ def traverseAndTranslate(file_data):
         for elem in file_data:
             traverseAndTranslate(elem)
     else:
+        if (not isinstance(file_data, Iterable) or isinstance(file_data, str)):
+            # Can't translate nor traverse.
+            return
+
         for key in iter(file_data):
             data = file_data[key]
 
@@ -43,30 +48,32 @@ def traverseAndTranslate(file_data):
                 title_dict[targetLocale] = translation_handler(title_dict["tr"]) # Do the translation
                 file_data[key] = title_dict # Append translation to the dictionary
 
-if __name__ == "__main__":
-    for filename in os.listdir(os.getcwd()+"/json_to_translate"):
+if __name__ == "__main__": # Doesn't execute when called from another file.
+    for (dirpath, dirnames, filenames) in os.walk(os.getcwd()+"\\json_to_translate"): # Search for JSON files in that folder.
+        for filename in filenames:
+            if filename.endswith('.json'):
+                filename = os.sep.join([dirpath, filename]) # get file location
 
-        # TODO Walk throught all subdirectories to find json files.
+                print("File to translate:", filename)
 
-        print("File to translate:", filename)
+                jsonFileName = filename
+                targetLocale = 'en' # Target Locale, change this when needed.
 
-        jsonFileName = "json_to_translate/"+filename
-        targetLocale = 'pt'
+                json_file = open(jsonFileName, 'r+', encoding='utf8')
+                file_data = json_file.read()
+                file_data = json.loads(file_data)
 
-        json_file = open(jsonFileName, encoding='utf8')
-        file_data = json_file.read()
-        file_data = json.loads(file_data)
-        json_file.close()
+                translator = google_translator.Translator(targetLocale)
 
-        output = open("results/"+filename, "w+", encoding='utf8')
+                try:
+                    traverseAndTranslate(file_data)
 
-        translator = google_translator.Translator(targetLocale)
+                    json_file.seek(0)
 
-        traverseAndTranslate(file_data)
+                    json_file.write(json.dumps(file_data, indent=4, ensure_ascii=False)) # Dump the dictionary into a JSON file
 
-        output.write(json.dumps(file_data, indent=4, ensure_ascii=False)) # Dump the dictionary into a JSON file
+                    json_file.close()
+                finally:
+                    translator.close() # Even if there is an error, save the translations to translation db.
 
-        output.close()
-
-        translator.close()
     print("\nDone!\n")
