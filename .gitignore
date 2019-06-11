@@ -7,3 +7,4 @@ json_to_translate/*
 results/*
 __pycache__/*
 things.json
+csv_to_translate/*
